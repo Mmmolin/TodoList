@@ -78,8 +78,8 @@ namespace TodoList
                 Text = "0"
             };
             statusBar.Controls.Add(itemCount);
-
         }
+
         private static void TodoInputEventHandler(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -93,21 +93,41 @@ namespace TodoList
 
                 foreach (Todo todo in todoList)
                 {
-                    todoListTable.Controls.Add(new Label
+                    Panel todoPanel = new Panel
+                    {
+                        BackColor = Color.Lavender,
+                        Width = 350,
+                        Height = 30,
+                    };
+                    todoListTable.Controls.Add(todoPanel);
+                    Label todoText = new Label
                     {
                         Text = todo.Information,
                         TextAlign = ContentAlignment.MiddleLeft,
+                        Location = new Point(0, 0),
                         BackColor = Color.Lavender,
                         ForeColor = Color.CornflowerBlue,
                         Font = new Font("consolas", 20),
-                        Width = 350,
+                        Width = 330,
                         Height = 30,
-                        Anchor = AnchorStyles.Top
-                    });
+                        Anchor = AnchorStyles.Left
+                    };
+                    todoPanel.Controls.Add(todoText);
+                    Button removeButton = new Button
+                    {
+                        Text = "X",
+                        TextAlign = ContentAlignment.TopCenter,
+                        Font = new Font("consolas", 14),
+                        FlatStyle = FlatStyle.Flat,
+                        Width = 20,
+                        Height = 30,
+                        Location = new Point(330, 0)
+                    };
+                    todoPanel.Controls.Add(removeButton);
+                    removeButton.FlatAppearance.BorderSize = 0;
                     todoListTable.RowCount = todoListTable.RowCount + 1;
                     todoListTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-                    
-                }                
+                }
                 itemCount.Text = int.Parse(itemCount.Text) + 1 + "";
                 textBox.Clear();
             }
