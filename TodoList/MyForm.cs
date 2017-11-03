@@ -41,6 +41,7 @@ namespace TodoList
                 Font = new Font("consolas", 20),
                 ForeColor = Color.CornflowerBlue,
                 BackColor = Color.Lavender,
+                BorderStyle = BorderStyle.None,
                 Width = 350,
                 Height = 50,
                 Dock = DockStyle.Fill,
@@ -100,11 +101,20 @@ namespace TodoList
                         Height = 30,
                     };
                     todoListTable.Controls.Add(todoPanel);
+                    CheckBox checkBox = new CheckBox
+                    {
+                        BackColor = Color.Lavender,
+                        Width = 20,
+                        Height = 30,
+                        Location = new Point(0, 0),
+                        Anchor = AnchorStyles.Top
+                    };
+                    todoPanel.Controls.Add(checkBox);
                     Label todoText = new Label
                     {
                         Text = todo.Information,
                         TextAlign = ContentAlignment.MiddleLeft,
-                        Location = new Point(0, 0),
+                        Location = new Point(20, 0),
                         BackColor = Color.Lavender,
                         ForeColor = Color.CornflowerBlue,
                         Font = new Font("consolas", 20),
@@ -125,6 +135,7 @@ namespace TodoList
                     };
                     todoPanel.Controls.Add(removeButton);
                     removeButton.FlatAppearance.BorderSize = 0;
+                    removeButton.Click += RemoveButtonEventHandler;
                     todoListTable.RowCount = todoListTable.RowCount + 1;
                     todoListTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
                 }
@@ -135,6 +146,10 @@ namespace TodoList
             {
 
             }
+        }
+        private static void RemoveButtonEventHandler(object sender, EventArgs e)
+        {
+            Button info = (Button)sender;
         }
     }
 
