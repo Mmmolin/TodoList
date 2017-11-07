@@ -81,6 +81,64 @@ namespace TodoList
             statusBar.Controls.Add(itemCount);
         }
 
+        private static void UpdateTodoListDisplay()
+        {
+            todoListTable.Controls.Clear();
+            foreach (Todo todo in todoList)
+            {
+                Panel todoPanel = new Panel
+                {
+                    BackColor = Color.Lavender,
+                    Width = 350,
+                    Height = 30,
+                    Tag = todoList.IndexOf(todo)
+                };
+                todoListTable.Controls.Add(todoPanel);
+                CheckBox checkBox = new CheckBox
+                {
+                    BackColor = Color.Lavender,
+                    Width = 20,
+                    Height = 30,
+                    Location = new Point(0, 0),
+                    Anchor = AnchorStyles.Top,
+                    Tag = todoList.IndexOf(todo)
+                };
+                checkBox.CheckedChanged += CheckBoxChangedEventHandler;
+                todoPanel.Controls.Add(checkBox);
+                Label todoText = new Label
+                {
+                    Text = todo.Information,
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    Location = new Point(20, 0),
+                    BackColor = Color.Lavender,
+                    ForeColor = Color.CornflowerBlue,
+                    Font = new Font("consolas", 20),
+                    Width = 300,
+                    Height = 30,
+                    Anchor = AnchorStyles.Left,
+                    Tag = todoList.IndexOf(todo)
+                };
+                todoPanel.Controls.Add(todoText);
+                Button removeButton = new Button
+                {
+                    Text = "X",
+                    TextAlign = ContentAlignment.TopCenter,
+                    Font = new Font("consolas", 14),
+                    FlatStyle = FlatStyle.Flat,
+                    Width = 20,
+                    Height = 30,
+                    Location = new Point(330, 0),
+                    Tag = todoList.IndexOf(todo)
+                };               
+                todoPanel.Controls.Add(removeButton);
+                removeButton.FlatAppearance.BorderSize = 0;
+                removeButton.Click += RemoveButtonEventHandler;
+                todoListTable.RowCount = todoListTable.RowCount + 1;
+                todoListTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+            }
+        }
+
         private static void TodoInputEventHandler(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -91,54 +149,7 @@ namespace TodoList
                 {
                     Information = textBox.Text
                 });
-
-                foreach (Todo todo in todoList)
-                {
-                    Panel todoPanel = new Panel
-                    {
-                        BackColor = Color.Lavender,
-                        Width = 350,
-                        Height = 30,
-                    };
-                    todoListTable.Controls.Add(todoPanel);
-                    CheckBox checkBox = new CheckBox
-                    {
-                        BackColor = Color.Lavender,
-                        Width = 20,
-                        Height = 30,
-                        Location = new Point(0, 0),
-                        Anchor = AnchorStyles.Top
-                    };
-                    todoPanel.Controls.Add(checkBox);
-                    Label todoText = new Label
-                    {
-                        Text = todo.Information,
-                        TextAlign = ContentAlignment.MiddleLeft,
-                        Location = new Point(20, 0),
-                        BackColor = Color.Lavender,
-                        ForeColor = Color.CornflowerBlue,
-                        Font = new Font("consolas", 20),
-                        Width = 330,
-                        Height = 30,
-                        Anchor = AnchorStyles.Left
-                    };
-                    todoPanel.Controls.Add(todoText);
-                    Button removeButton = new Button
-                    {
-                        Text = "X",
-                        TextAlign = ContentAlignment.TopCenter,
-                        Font = new Font("consolas", 14),
-                        FlatStyle = FlatStyle.Flat,
-                        Width = 20,
-                        Height = 30,
-                        Location = new Point(330, 0)
-                    };
-                    todoPanel.Controls.Add(removeButton);
-                    removeButton.FlatAppearance.BorderSize = 0;
-                    removeButton.Click += RemoveButtonEventHandler;
-                    todoListTable.RowCount = todoListTable.RowCount + 1;
-                    todoListTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-                }
+                UpdateTodoListDisplay();
                 itemCount.Text = int.Parse(itemCount.Text) + 1 + "";
                 textBox.Clear();
             }
@@ -150,6 +161,22 @@ namespace TodoList
         private static void RemoveButtonEventHandler(object sender, EventArgs e)
         {
             Button info = (Button)sender;
+            int todoIndex = (int)info.Tag;
+            todoList.RemoveAt(todoIndex);
+            UpdateTodoListDisplay();
+            itemCount.Text = int.Parse(itemCount.Text) - 1 + "";
+        }
+        private static void CheckBoxChangedEventHandler(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            if (checkBox.Checked == true)
+            {
+                
+            }
+            else
+            {
+
+            }
         }
     }
 
