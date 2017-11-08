@@ -135,10 +135,11 @@ namespace TodoList
                     Anchor = AnchorStyles.Left,
                     Tag = todoList.IndexOf(todo)
                 };
-                
+
                 if (todo.IsDone == true)
                 {
                     todoText.Font = new Font("consolas", 20, FontStyle.Strikeout);
+                    todoText.ForeColor = Color.Gray;
                 }
                 todoPanel.Controls.Add(todoText);
 
@@ -167,18 +168,29 @@ namespace TodoList
             if (e.KeyCode == Keys.Enter)
             {
                 string itemOrItems = " items left";
+                int todoCount = 0;
                 TextBox textBox = (TextBox)sender;
-                todoListTable.Controls.Clear();
-                todoList.Add(new Todo
+                if (textBox.Text != "")
                 {
-                    Information = textBox.Text
-                });
+                    todoListTable.Controls.Clear();
+                    todoList.Add(new Todo
+                    {
+                        Information = textBox.Text
+                    });
+                }
                 UpdateTodoListDisplay();
-                if (todoList.Count < 2)
+                foreach (Todo todo in todoList)
+                {
+                    if (todo.IsDone == false)
+                    {
+                        todoCount++;
+                    }
+                }
+                if (todoCount < 2)
                 {
                     itemOrItems = " item left";
                 }
-                itemCount.Text = todoList.Count.ToString() + itemOrItems;
+                itemCount.Text = todoCount + itemOrItems;
                 textBox.Clear();
             }
             else
@@ -189,28 +201,63 @@ namespace TodoList
         private static void RemoveButtonEventHandler(object sender, EventArgs e)
         {
             string itemOrItems = " items left";
+            int todoCount = 0;
             Button info = (Button)sender;
             int todoIndex = (int)info.Tag;
             todoList.RemoveAt(todoIndex);
             UpdateTodoListDisplay();
-            if (todoList.Count < 2)
+            foreach (Todo todo in todoList)
+            {
+                if (todo.IsDone == false)
+                {
+                    todoCount++;
+                }
+            }
+            if (todoCount < 2)
             {
                 itemOrItems = " item left";
             }
-            itemCount.Text = todoList.Count.ToString() + itemOrItems;
+            itemCount.Text = todoCount + itemOrItems;
 
         }
         private static void ClickedCheckBoxEventHandler(object sender, EventArgs e)
         {
+            int todoCount = 0;
+            string itemOrItems = " items left";
             CheckBox checkBox = (CheckBox)sender;
             int index = (int)checkBox.Tag;
             if (todoList[index].IsDone == true)
             {
                 todoList[index].IsDone = false;
+                foreach (Todo todo in todoList)
+                {
+                    if (todo.IsDone == false)
+                    {
+                        todoCount++;
+                    }
+                }
+                if (todoCount < 2)
+                {
+                    itemOrItems = " item left";
+                }
+                itemCount.Text = todoCount + itemOrItems;
             }
             else
             {
+                
                 todoList[index].IsDone = true;
+                foreach (Todo todo in todoList)
+                {
+                    if (todo.IsDone == false)
+                    {
+                        todoCount++;
+                    }
+                }
+                if (todoCount < 2)
+                {
+                    itemOrItems = " item left";
+                }
+                itemCount.Text = todoCount + itemOrItems;
             }
             UpdateTodoListDisplay();
         }
