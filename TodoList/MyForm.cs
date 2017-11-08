@@ -11,13 +11,17 @@ namespace TodoList
 
     class MyForm : Form
     {
+        // class variables
         public static List<Todo> todoList = new List<Todo> { };
         private static TableLayoutPanel table;
         private static TableLayoutPanel todoListTable;
         private static TextBox todoInput;
         private static Label itemCount;
+        private static Panel statusBar;
+        private static Button removeButton;
         public MyForm()
         {
+            // Table layout
             table = new TableLayoutPanel
             {
                 BackColor = Color.Lavender,
@@ -27,6 +31,7 @@ namespace TodoList
             table.RowStyles.Add(new RowStyle(SizeType.Absolute, 70));
             table.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             this.MinimumSize = new Size(500, 500);
+            //todo title
             table.Controls.Add(new Label
             {
                 Text = "todos",
@@ -36,6 +41,7 @@ namespace TodoList
                 Dock = DockStyle.Fill
 
             });
+            //Textbox for input
             todoInput = new TextBox
             {
                 Font = new Font("consolas", 20),
@@ -63,24 +69,27 @@ namespace TodoList
             };
             todoListTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             table.Controls.Add(todoListTable);
-
-            TableLayoutPanel statusBar = new TableLayoutPanel
+            //statusbar panel and label
+            statusBar = new Panel
             {
-                ColumnCount = 2,
                 BackColor = Color.Lavender,
                 Width = 350,
                 Height = 30,
-                Dock = DockStyle.Top,
                 Anchor = AnchorStyles.Top
             };
             table.Controls.Add(statusBar);
             itemCount = new Label
             {
-                Text = "0"
+                BackColor = Color.Lavender,
+                //Text = "0",
+                Location = new Point(0, 0),
+                Width = 100,
+                Height = 30
+
             };
             statusBar.Controls.Add(itemCount);
         }
-
+        // update display, create panels
         private static void UpdateTodoListDisplay()
         {
             todoListTable.Controls.Clear();
@@ -103,8 +112,16 @@ namespace TodoList
                     Anchor = AnchorStyles.Top,
                     Tag = todoList.IndexOf(todo)
                 };
-                checkBox.CheckedChanged += CheckBoxChangedEventHandler;
+                if (todo.IsDone == true)
+                {
+                    checkBox.Checked = true;
+                }
+                else
+                {
+                    checkBox.Checked = false;
+                }
                 todoPanel.Controls.Add(checkBox);
+                checkBox.Click += ClickedCheckBoxEventHandler;
                 Label todoText = new Label
                 {
                     Text = todo.Information,
@@ -118,7 +135,13 @@ namespace TodoList
                     Anchor = AnchorStyles.Left,
                     Tag = todoList.IndexOf(todo)
                 };
+                
+                if (todo.IsDone == true)
+                {
+                    todoText.Font = new Font("consolas", 20, FontStyle.Strikeout);
+                }
                 todoPanel.Controls.Add(todoText);
+
                 Button removeButton = new Button
                 {
                     Text = "X",
@@ -129,11 +152,11 @@ namespace TodoList
                     Height = 30,
                     Location = new Point(330, 0),
                     Tag = todoList.IndexOf(todo)
-                };               
+                };
+                //removeButton.Hide();
                 todoPanel.Controls.Add(removeButton);
                 removeButton.FlatAppearance.BorderSize = 0;
                 removeButton.Click += RemoveButtonEventHandler;
-                todoListTable.RowCount = todoListTable.RowCount + 1;
                 todoListTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
             }
@@ -143,6 +166,7 @@ namespace TodoList
         {
             if (e.KeyCode == Keys.Enter)
             {
+                string itemOrItems = " items left";
                 TextBox textBox = (TextBox)sender;
                 todoListTable.Controls.Clear();
                 todoList.Add(new Todo
@@ -150,7 +174,11 @@ namespace TodoList
                     Information = textBox.Text
                 });
                 UpdateTodoListDisplay();
-                itemCount.Text = int.Parse(itemCount.Text) + 1 + "";
+                if (todoList.Count < 2)
+                {
+                    itemOrItems = " item left";
+                }
+                itemCount.Text = todoList.Count.ToString() + itemOrItems;
                 textBox.Clear();
             }
             else
@@ -160,24 +188,34 @@ namespace TodoList
         }
         private static void RemoveButtonEventHandler(object sender, EventArgs e)
         {
+            string itemOrItems = " items left";
             Button info = (Button)sender;
             int todoIndex = (int)info.Tag;
             todoList.RemoveAt(todoIndex);
             UpdateTodoListDisplay();
-            itemCount.Text = int.Parse(itemCount.Text) - 1 + "";
+            if (todoList.Count < 2)
+            {
+                itemOrItems = " item left";
+            }
+            itemCount.Text = todoList.Count.ToString() + itemOrItems;
+
         }
-        private static void CheckBoxChangedEventHandler(object sender, EventArgs e)
+        private static void ClickedCheckBoxEventHandler(object sender, EventArgs e)
         {
             CheckBox checkBox = (CheckBox)sender;
-            if (checkBox.Checked == true)
+            int index = (int)checkBox.Tag;
+            if (todoList[index].IsDone == true)
             {
-                
+                todoList[index].IsDone = false;
             }
             else
             {
-
+                todoList[index].IsDone = true;
             }
+            UpdateTodoListDisplay();
         }
+
+
     }
 
 }
