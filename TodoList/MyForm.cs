@@ -28,6 +28,7 @@ namespace TodoList
                 RowCount = 2,
                 Dock = DockStyle.Fill,
             };
+
             table.RowStyles.Add(new RowStyle(SizeType.Absolute, 70));
             table.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             this.MinimumSize = new Size(500, 500);
@@ -69,26 +70,20 @@ namespace TodoList
             };
             todoListTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             table.Controls.Add(todoListTable);
-            //statusbar panel and label
-            statusBar = new Panel
-            {
-                BackColor = Color.Lavender,
-                Width = 350,
-                Height = 30,
-                Anchor = AnchorStyles.Top
-            };
-            table.Controls.Add(statusBar);
-            itemCount = new Label
-            {
-                BackColor = Color.Lavender,
-                //Text = "0",
-                Location = new Point(0, 0),
-                Width = 100,
-                Height = 30
 
-            };
-            statusBar.Controls.Add(itemCount);
+            //statusbar panel and label
+            //statusBar = new Panel
+            //{
+            //    BackColor = Color.Lavender,
+            //    Width = 350,
+            //    Height = 30,
+            //    Anchor = AnchorStyles.Top,
+            //    Margin = new Padding(0, 30, 0, 0)
+            //};
+            //table.Controls.Add(statusBar);            
         }
+
+
         // update display, create panels
         private static void UpdateTodoListDisplay()
         {
@@ -135,17 +130,17 @@ namespace TodoList
                     Anchor = AnchorStyles.Left,
                     Tag = todoList.IndexOf(todo)
                 };
-
                 if (todo.IsDone == true)
                 {
                     todoText.Font = new Font("consolas", 20, FontStyle.Strikeout);
                     todoText.ForeColor = Color.Gray;
-                }
+                }                
                 todoPanel.Controls.Add(todoText);
 
                 Button removeButton = new Button
                 {
                     Text = "X",
+                    Name = "RemoveButton " + todoList.IndexOf(todo),
                     TextAlign = ContentAlignment.TopCenter,
                     Font = new Font("consolas", 14),
                     FlatStyle = FlatStyle.Flat,
@@ -154,12 +149,10 @@ namespace TodoList
                     Location = new Point(330, 0),
                     Tag = todoList.IndexOf(todo)
                 };
-                //removeButton.Hide();
                 todoPanel.Controls.Add(removeButton);
                 removeButton.FlatAppearance.BorderSize = 0;
                 removeButton.Click += RemoveButtonEventHandler;
                 todoListTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-
             }
         }
 
@@ -179,18 +172,6 @@ namespace TodoList
                     });
                 }
                 UpdateTodoListDisplay();
-                foreach (Todo todo in todoList)
-                {
-                    if (todo.IsDone == false)
-                    {
-                        todoCount++;
-                    }
-                }
-                if (todoCount < 2)
-                {
-                    itemOrItems = " item left";
-                }
-                itemCount.Text = todoCount + itemOrItems;
                 textBox.Clear();
             }
             else
@@ -200,71 +181,26 @@ namespace TodoList
         }
         private static void RemoveButtonEventHandler(object sender, EventArgs e)
         {
-            string itemOrItems = " items left";
-            int todoCount = 0;
             Button info = (Button)sender;
             int todoIndex = (int)info.Tag;
             todoList.RemoveAt(todoIndex);
             UpdateTodoListDisplay();
-            foreach (Todo todo in todoList)
-            {
-                if (todo.IsDone == false)
-                {
-                    todoCount++;
-                }
-            }
-            if (todoCount < 2)
-            {
-                itemOrItems = " item left";
-            }
-            itemCount.Text = todoCount + itemOrItems;
-
         }
         private static void ClickedCheckBoxEventHandler(object sender, EventArgs e)
         {
-            int todoCount = 0;
-            string itemOrItems = " items left";
             CheckBox checkBox = (CheckBox)sender;
             int index = (int)checkBox.Tag;
             if (todoList[index].IsDone == true)
             {
                 todoList[index].IsDone = false;
-                foreach (Todo todo in todoList)
-                {
-                    if (todo.IsDone == false)
-                    {
-                        todoCount++;
-                    }
-                }
-                if (todoCount < 2)
-                {
-                    itemOrItems = " item left";
-                }
-                itemCount.Text = todoCount + itemOrItems;
             }
             else
             {
-                
                 todoList[index].IsDone = true;
-                foreach (Todo todo in todoList)
-                {
-                    if (todo.IsDone == false)
-                    {
-                        todoCount++;
-                    }
-                }
-                if (todoCount < 2)
-                {
-                    itemOrItems = " item left";
-                }
-                itemCount.Text = todoCount + itemOrItems;
             }
             UpdateTodoListDisplay();
         }
-
-
     }
-
 }
 
 
