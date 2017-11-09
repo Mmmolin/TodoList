@@ -16,9 +16,9 @@ namespace TodoList
         private static TableLayoutPanel table;
         private static TableLayoutPanel todoListTable;
         private static TextBox todoInput;
-        private static Label itemCount;
-        private static Panel statusBar;
-        private static Button removeButton;
+        //private static Label itemCount;
+        //private static Panel statusBar;
+        //private static Button removeButton;
         public MyForm()
         {
             // Table layout
@@ -57,6 +57,7 @@ namespace TodoList
             todoInput.KeyDown += TodoInputEventHandler;
             //todoInput.Multiline = true;
             Controls.Add(table);
+            table.AutoScroll = true;
             table.Controls.Add(todoInput);
 
             todoListTable = new TableLayoutPanel
@@ -128,6 +129,7 @@ namespace TodoList
                     Width = 300,
                     Height = 30,
                     Anchor = AnchorStyles.Left,
+                    
                     Tag = todoList.IndexOf(todo)
                 };
                 if (todo.IsDone == true)
@@ -160,8 +162,8 @@ namespace TodoList
         {
             if (e.KeyCode == Keys.Enter)
             {
-                string itemOrItems = " items left";
-                int todoCount = 0;
+                e.Handled = true;
+                e.SuppressKeyPress = true;
                 TextBox textBox = (TextBox)sender;
                 if (textBox.Text != "")
                 {
