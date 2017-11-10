@@ -25,10 +25,10 @@ namespace TodoList
                 RowCount = 2,
                 Dock = DockStyle.Fill,
             };
-
             table.RowStyles.Add(new RowStyle(SizeType.Absolute, 70));
             table.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             this.MinimumSize = new Size(500, 500);
+            Controls.Add(table);
 
             table.Controls.Add(new Label
             {
@@ -37,7 +37,6 @@ namespace TodoList
                 Font = new Font("consolas", 50),
                 ForeColor = Color.CornflowerBlue,
                 Dock = DockStyle.Fill
-
             });
            
             todoInput = new TextBox
@@ -51,10 +50,9 @@ namespace TodoList
                 Dock = DockStyle.Fill,
                 Anchor = AnchorStyles.Top
             };
-            todoInput.KeyDown += TodoInputEventHandler;
-            Controls.Add(table);
-            table.AutoScroll = true;
             table.Controls.Add(todoInput);
+            table.AutoScroll = true;
+            todoInput.KeyDown += TodoInputEventHandler;
 
             todoListTable = new TableLayoutPanel
             {
@@ -65,8 +63,8 @@ namespace TodoList
                 Anchor = AnchorStyles.Top,
                 AutoSize = true
             };
-            todoListTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             table.Controls.Add(todoListTable);
+            todoListTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         }
 
         private static void CreateTodoListDisplay()
@@ -120,11 +118,11 @@ namespace TodoList
                 TodoIsDone(todo, checkBox);
                 TodoStrikeOut(todo, todoText);                
 
-                todoPanel.Controls.Add(todoText);
                 todoListTable.Controls.Add(todoPanel);
                 todoPanel.Controls.Add(checkBox);
-                checkBox.Click += ClickedCheckBoxEventHandler;
+                todoPanel.Controls.Add(todoText);
                 todoPanel.Controls.Add(removeButton);
+                checkBox.Click += ClickedCheckBoxEventHandler;
                 removeButton.FlatAppearance.BorderSize = 0;
                 removeButton.Click += RemoveButtonEventHandler;
                 todoListTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
