@@ -16,6 +16,8 @@ namespace TodoList
         private static TableLayoutPanel table;
         private static TableLayoutPanel todoListTable;
         private static TextBox todoInput;
+        private static IEnumerable<Todo> sortList = todoList;
+        private static string sortChoice { get; set; }
 
         public MyForm()
         {
@@ -38,7 +40,43 @@ namespace TodoList
                 ForeColor = Color.CornflowerBlue,
                 Dock = DockStyle.Fill
             });
-           
+
+            Panel sortButtonsPanel = new Panel
+            {
+                BackColor = Color.Lavender,
+                Width = 350,
+                Height = 20,
+                Anchor = AnchorStyles.Top
+            };
+            table.Controls.Add(sortButtonsPanel);
+            Button allButton = new Button
+            {
+                Text = "All",
+                Location = new Point(50, 0),
+                Width = 40,
+                Height = 20
+            };
+            Button activeButton = new Button
+            {
+                Text = "Active",
+                Location = new Point(100, 0),
+                Width = 50,
+                Height = 20
+            };
+            sortButtonsPanel.Controls.Add(activeButton);
+            activeButton.Click += SortButtonClickEventHandler;
+            sortButtonsPanel.Controls.Add(allButton);
+            Button completedButton = new Button
+            {
+                Text = "Completed",
+                Location = new Point(160, 0),
+                Width = 60,
+                Height = 20
+            };
+            sortButtonsPanel.Controls.Add(completedButton);
+            completedButton.Click += SortButtonClickEventHandler;
+
+            allButton.Click += SortButtonClickEventHandler;
             todoInput = new TextBox
             {
                 Font = new Font("consolas", 20),
@@ -65,12 +103,14 @@ namespace TodoList
             };
             table.Controls.Add(todoListTable);
             todoListTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            
+
         }
 
         private static void CreateTodoListDisplay()
         {
             todoListTable.Controls.Clear();
-            foreach (Todo todo in todoList)
+            foreach (Todo todo in sortList)
             {
                 Panel todoPanel = new Panel
                 {
@@ -116,7 +156,7 @@ namespace TodoList
                 };
 
                 TodoIsDone(todo, checkBox);
-                TodoStrikeOut(todo, todoText);                
+                TodoStrikeOut(todo, todoText);
 
                 todoListTable.Controls.Add(todoPanel);
                 todoPanel.Controls.Add(checkBox);
@@ -147,7 +187,7 @@ namespace TodoList
                 textBox.Clear();
                 CreateTodoListDisplay();
             }
-            else {}
+            else { }
         }
         private static void RemoveButtonEventHandler(object sender, EventArgs e)
         {
@@ -188,6 +228,24 @@ namespace TodoList
                 label.Font = new Font("consolas", 20, FontStyle.Strikeout);
                 label.ForeColor = Color.Gray;
             }
+        }
+        private static void SortButtonClickEventHandler(object sender, EventArgs e)
+        {
+            Button button = (Button)sender;
+            sortChoice = button.Text;
+            if (sortChoice == "All")
+            {
+                sortList = todoList;
+            }
+            else if (sortChoice == "Completed")
+            {
+                sortList = todoList.Where(t => t.IsDone == true);
+            }
+            else if (sortChoice == "Active")
+            {
+                sortList = todoList.Where(t => t.IsDone == false);
+            }
+            CreateTodoListDisplay();
         }
     }
 }
