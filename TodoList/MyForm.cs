@@ -81,7 +81,6 @@ namespace TodoList
                     Height = 30,
                     Tag = todoList.IndexOf(todo)
                 };
-                todoListTable.Controls.Add(todoPanel);
                 CheckBox checkBox = new CheckBox
                 {
                     BackColor = Color.Lavender,
@@ -91,16 +90,6 @@ namespace TodoList
                     Anchor = AnchorStyles.Top,
                     Tag = todoList.IndexOf(todo)
                 };
-                if (todo.IsDone == true)
-                {
-                    checkBox.Checked = true;
-                }
-                else
-                {
-                    checkBox.Checked = false;
-                }
-                todoPanel.Controls.Add(checkBox);
-                checkBox.Click += ClickedCheckBoxEventHandler;
                 Label todoText = new Label
                 {
                     Text = todo.Information,
@@ -115,13 +104,6 @@ namespace TodoList
 
                     Tag = todoList.IndexOf(todo)
                 };
-                if (todo.IsDone == true)
-                {
-                    todoText.Font = new Font("consolas", 20, FontStyle.Strikeout);
-                    todoText.ForeColor = Color.Gray;
-                }
-                todoPanel.Controls.Add(todoText);
-
                 Button removeButton = new Button
                 {
                     Text = "X",
@@ -134,6 +116,14 @@ namespace TodoList
                     Location = new Point(330, 0),
                     Tag = todoList.IndexOf(todo)
                 };
+
+                TodoIsDone(todo, checkBox);
+                TodoStrikeOut(todo, todoText);                
+
+                todoPanel.Controls.Add(todoText);
+                todoListTable.Controls.Add(todoPanel);
+                todoPanel.Controls.Add(checkBox);
+                checkBox.Click += ClickedCheckBoxEventHandler;
                 todoPanel.Controls.Add(removeButton);
                 removeButton.FlatAppearance.BorderSize = 0;
                 removeButton.Click += RemoveButtonEventHandler;
@@ -161,7 +151,6 @@ namespace TodoList
             }
             else {}
         }
-
         private static void RemoveButtonEventHandler(object sender, EventArgs e)
         {
             Button info = (Button)sender;
@@ -169,7 +158,6 @@ namespace TodoList
             todoList.RemoveAt(todoIndex);
             CreateTodoListDisplay();
         }
-
         private static void ClickedCheckBoxEventHandler(object sender, EventArgs e)
         {
             CheckBox checkBox = (CheckBox)sender;
@@ -183,6 +171,25 @@ namespace TodoList
                 todoList[index].IsDone = true;
             }
             CreateTodoListDisplay();
+        }
+        private static bool TodoIsDone(Todo todo, CheckBox checkBox)
+        {
+            if (todo.IsDone == true)
+            {
+                return checkBox.Checked = true;
+            }
+            else
+            {
+                return checkBox.Checked = false;
+            }
+        }
+        private static void TodoStrikeOut(Todo todo, Label label)
+        {
+            if (todo.IsDone == true)
+            {
+                label.Font = new Font("consolas", 20, FontStyle.Strikeout);
+                label.ForeColor = Color.Gray;
+            }
         }
     }
 }
