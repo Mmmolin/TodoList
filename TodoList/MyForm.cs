@@ -18,6 +18,7 @@ namespace TodoList
         private static TextBox todoInput;
         private static IEnumerable<Todo> sortList = todoList;
         private static string sortChoice { get; set; }
+        private static Label todoCounter { get; set; }
 
         public MyForm()
         {
@@ -40,7 +41,22 @@ namespace TodoList
                 ForeColor = Color.CornflowerBlue,
                 Dock = DockStyle.Fill
             });
-
+            Panel itemCounterPanel = new Panel
+            {
+                BackColor = Color.Lavender,
+                Width = 350,
+                Height = 20,
+                Anchor = AnchorStyles.Top
+            };
+            table.Controls.Add(itemCounterPanel);
+            todoCounter = new Label
+            {
+                Text = "0",
+                Location = new Point(145, 0),
+                Visible = false 
+            };
+            table.Controls.Add(itemCounterPanel);
+            itemCounterPanel.Controls.Add(todoCounter);
             Panel sortButtonsPanel = new Panel
             {
                 BackColor = Color.Lavender,
@@ -52,29 +68,40 @@ namespace TodoList
             Button allButton = new Button
             {
                 Text = "All",
-                Location = new Point(50, 0),
+                Location = new Point(20, 0),
                 Width = 40,
                 Height = 20
             };
+
             Button activeButton = new Button
             {
                 Text = "Active",
-                Location = new Point(100, 0),
+                Location = new Point(65, 0),
                 Width = 50,
                 Height = 20
             };
-            sortButtonsPanel.Controls.Add(activeButton);
             activeButton.Click += SortButtonClickEventHandler;
             sortButtonsPanel.Controls.Add(allButton);
+            sortButtonsPanel.Controls.Add(activeButton);
             Button completedButton = new Button
             {
                 Text = "Completed",
-                Location = new Point(160, 0),
+                Location = new Point(120, 0),
                 Width = 60,
                 Height = 20
             };
             sortButtonsPanel.Controls.Add(completedButton);
             completedButton.Click += SortButtonClickEventHandler;
+
+            Button clearCompletedButton = new Button
+            {
+                Text = "Clear Completed",
+                Location = new Point(230, 0),
+                Width = 100,
+                Height = 20
+            };
+            sortButtonsPanel.Controls.Add(clearCompletedButton);
+            clearCompletedButton.Click += ClearCompletedEventHandler;
 
             allButton.Click += SortButtonClickEventHandler;
             todoInput = new TextBox
@@ -89,6 +116,7 @@ namespace TodoList
                 Anchor = AnchorStyles.Top
             };
             table.Controls.Add(todoInput);
+
             table.AutoScroll = true;
             todoInput.KeyDown += TodoInputEventHandler;
 
@@ -101,9 +129,12 @@ namespace TodoList
                 Anchor = AnchorStyles.Top,
                 AutoSize = true
             };
+            table.Focus();
+            allButton.Select();
+            todoInput.Select();
             table.Controls.Add(todoListTable);
             todoListTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            
+
 
         }
 
@@ -157,6 +188,7 @@ namespace TodoList
 
                 TodoIsDone(todo, checkBox);
                 TodoStrikeOut(todo, todoText);
+                UpdateTodoCounter();
 
                 todoListTable.Controls.Add(todoPanel);
                 todoPanel.Controls.Add(checkBox);
@@ -166,6 +198,7 @@ namespace TodoList
                 removeButton.FlatAppearance.BorderSize = 0;
                 removeButton.Click += RemoveButtonEventHandler;
                 todoListTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
             }
         }
 
@@ -229,6 +262,25 @@ namespace TodoList
                 label.ForeColor = Color.Gray;
             }
         }
+        private static void UpdateTodoCounter()
+        {
+            todoCounter.Visible = true;
+            string singularOrPlural = "";
+            int count = todoList.Count(t => t.IsDone == false);
+            if (count == 1)
+            {
+                singularOrPlural = " item left";
+            }
+            else if (count > 1)
+            {
+                singularOrPlural = " items left";
+            }
+            else
+            {
+                todoCounter.Visible = false;
+            }
+            todoCounter.Text = count + singularOrPlural;
+        }
         private static void SortButtonClickEventHandler(object sender, EventArgs e)
         {
             Button button = (Button)sender;
@@ -245,6 +297,11 @@ namespace TodoList
             {
                 sortList = todoList.Where(t => t.IsDone == false);
             }
+            CreateTodoListDisplay();
+        }
+        private static void ClearCompletedEventHandler(object sender, EventArgs e)
+        {
+            todoList.RemoveAll(t => t.IsDone == true);
             CreateTodoListDisplay();
         }
     }
