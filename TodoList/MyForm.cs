@@ -49,6 +49,7 @@ namespace TodoList
                 Anchor = AnchorStyles.Top
             };
             table.Controls.Add(itemCounterPanel);
+
             todoCounter = new Label
             {
                 Text = "0",
@@ -57,6 +58,7 @@ namespace TodoList
             };
             table.Controls.Add(itemCounterPanel);
             itemCounterPanel.Controls.Add(todoCounter);
+
             Panel sortButtonsPanel = new Panel
             {
                 BackColor = Color.Lavender,
@@ -83,6 +85,7 @@ namespace TodoList
             activeButton.Click += SortButtonClickEventHandler;
             sortButtonsPanel.Controls.Add(allButton);
             sortButtonsPanel.Controls.Add(activeButton);
+
             Button completedButton = new Button
             {
                 Text = "Completed",
@@ -102,8 +105,8 @@ namespace TodoList
             };
             sortButtonsPanel.Controls.Add(clearCompletedButton);
             clearCompletedButton.Click += ClearCompletedEventHandler;
-
             allButton.Click += SortButtonClickEventHandler;
+
             todoInput = new TextBox
             {
                 Font = new Font("consolas", 20),
@@ -116,7 +119,6 @@ namespace TodoList
                 Anchor = AnchorStyles.Top
             };
             table.Controls.Add(todoInput);
-
             table.AutoScroll = true;
             todoInput.KeyDown += TodoInputEventHandler;
 
@@ -134,8 +136,6 @@ namespace TodoList
             todoInput.Select();
             table.Controls.Add(todoListTable);
             todoListTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-
-
         }
 
         private static void CreateTodoListDisplay()
@@ -198,7 +198,6 @@ namespace TodoList
                 removeButton.FlatAppearance.BorderSize = 0;
                 removeButton.Click += RemoveButtonEventHandler;
                 todoListTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-
             }
         }
 
